@@ -1,0 +1,42 @@
+version: '3.7'
+
+services:
+
+  db:
+    container_name: db_asia_mall
+    image: postgres:12.0-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    networks:
+      - my-network
+    env_file:
+      - ./.env
+
+  web:
+    container_name: web_asia_mall
+    restart: unless-stopped
+    build:
+      context: .
+    volumes:
+        - static/:/static
+        - media/:/media
+        - ./:/app
+    ports:
+      - "8000:8000"
+    networks:
+      - my-network
+    depends_on:
+      - db
+    command: >
+        sh -c "python3 manage.py makemigrations --noinput &&
+              python3 manage.py migrate --noinput &&
+              python3 manage.py runserver 0.0.0.0:8000"
+    
+
+volumes:
+  postgres_data:
+  media:
+  static:
+
+networks:
+  my-network:
