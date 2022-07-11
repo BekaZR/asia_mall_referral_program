@@ -1,5 +1,7 @@
-from django.urls import path, include
+from django.urls import path
+
 from rest_framework import routers
+
 from mainapp.views import (
         UserView,
         ProfileView,
@@ -16,4 +18,5 @@ router.register('referral', ReferralProgramView)
 
 urlpatterns =[
         path('get_referral_url/', RefferalUrl.as_view(), name='referral_url', ),
-] + router.urls
+]
+urlpatterns += router.urls
